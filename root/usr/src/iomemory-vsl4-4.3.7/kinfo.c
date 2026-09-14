@@ -471,7 +471,16 @@ void kfio_info_os_driver_fini(void)
 
     if (fusion_parent_dir != NULL)
     {
-        kfio_remove_proc_entry(UFIO_KINFO_ROOT, NULL);
+        /*
+         * We created the directory, but another generation of the driver may
+         * have borrowed it since and may still have entries in it.  Removing a
+         * non-empty procfs directory leaks its children and the next load then
+         * collides recreating it, so only remove it when it is provably empty.
+         */
+        if (fio_enum_root_removable(UFIO_KINFO_ROOT))
+        {
+            kfio_remove_proc_entry(UFIO_KINFO_ROOT, NULL);
+        }
         fusion_parent_dir = NULL;
     }
 }
