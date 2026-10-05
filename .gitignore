@@ -2,3 +2,6 @@
 ioMemory-vsl*
 root/.vs
 **/license.c
+
+# Agent worktrees (ephemeral, per-session scratch)
+.claude/worktrees/
